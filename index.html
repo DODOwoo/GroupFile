@@ -1,7 +1,65 @@
 <!DOCTYPE HTML>
 <html>
  <head>
+ <link href="http://designmodo.github.io/Flat-UI/bootstrap/css/bootstrap.css" rel="stylesheet">
+ <link href="http://designmodo.github.io/Flat-UI/css/flat-ui.css" rel="stylesheet">
+ <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
  </head>
  <body>
+ 	<div class="container">
+ 		<div class="title"></div>
+ 		<div class="data"></div>
+ 		<div class="row">
+ 			<button id="btn-change" onclick="changeFile()" class="btn btn-primary">换一批</button>
+ 		</div>
+ 	</div>
  </body>
+ <style type="text/css">
+ @media (min-width: 1200px) { .container{ width: 2170px;}}'
+ </style>
+ <script type="text/javascript">
+var loadFromRemote = function(filename, target)
+{
+	$.ajax({
+		type:'GET',
+		url:filename,
+		success: function (result) {
+            console.log(result);
+            $('.'+target).append('<div>'+result+'</div>');
+        },
+        error: function(err){
+        	if(err.code == 200){
+        		$('.'+target).append('<div>'+err.responseText+'</div>');
+        	}
+        	console.log(err.code, err.responseText);
+        }
+	});
+}
+</script>
+ <script type="text/javascript">
+ var files = '';
+ var i = 0;
+ (function () {
+ 	$.getJSON( "ajax/getjsonfiles.json", function( data ) {
+ 		files = data;
+ 		loadData();
+ 	});
+ })();
+var coltitle = '';
+var loadData = function(){
+	$('.data').append('<h4>'+files[i]+'</h4>');
+	/*if(coltitle==''){
+		loadFromRemote('s/coltitle.txt','title');
+	}*/
+	$.getJSON('ip/'+files[i], function( data ) {
+		$.each(data, function(i, value){
+			$('.data').append('<div>'+value+'</div>');
+		});
+ 	});
+}
+ var changeFile = function(){
+ 	$('.data').empty();
+ 	loadData(++i);
+ }
+ </script>
  </html>
